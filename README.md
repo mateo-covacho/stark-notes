@@ -1,213 +1,328 @@
-# 🏗 Scaffold-Stark
+# Stark-notes Project Explanation
 
-<h4 align="center">
-  <a href="https://docs.scaffoldstark.com/">Documentation</a> |
-  <a href="https://scaffoldstark.com/">Website</a> |
-  <a href="https://scaffold-stark-demo.vercel.app/debug">Demo</a>
-</h4>
+## Overview
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on Starknet blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+This document outlines a system being developed for the StarkNet Hackathon. The system involves reviewers assessing "logos," which are statements answerable by "yes" or "no." Key components include reviewers, the agora pool, logos, and bounties.
 
-⚙️ Built using NextJS, Starknet.js, Scarb, Starknet-React, Starknet Foundry and Typescript.
+## Players and Concepts
 
-- ✅ **Contract Fast Reload**: Your frontend auto-adapts to your smart contracts as you deploy them.
-- 🪝 [**Custom hooks**](https://docs.scaffoldstark.com/hooks/): Collection of React hooks wrapper around [starknet-react](https://starknet-react.com/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldstark.com/components): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Prefunded Account**: Quickly test your application with a burner wallet and prefunded accounts.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with Starknet network.
+### Reviewers
 
-![Debug Contracts tab](./packages/nextjs/public/debug-image.png)
+- **Role**: Vote on the factual accuracy of logos.
+- **Participation**:
+  - Open to anyone.
+  - Reviewers vote on the validity of proposed logos.
+- **Anonymity**: Ideally anonymous, though enforcing anonymity is challenging.
+- **Staking & Reputation**:
+  - Reviewers must stake some stark or reputation  to participate.
+  - Reputation increases if votes align with the eventual "settled" consensus.
+  - This is simpler than a full-blown decentralized oracle network but still encourages honest behavior.
 
-## Requirements
+### Agora Pool
 
-Before you begin, you need to install the following tools:
+- **Function**: Platform where reviewers vote on logos.
+- **Features**:
+  - May include off-chain discussion (like a debate system).
+- **Voting Mechanisms**:
+  - A minimum participation threshold (e.g., at least three votes).
+  - Weighted votes based on reviewer reputation.
+  - "Truth" outcome can shift over time if new majority forms.
 
-- [Node (>= v18.17)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
-- [Rust](https://rust-lang.org/tools/install)
-- [asdf](https://asdf-vm.com/guide/getting-started.html)
-- [Cairo 1.0 extension for VSCode](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1)
+### Logos
 
-### Starknet-devnet version
+- **Definition**: Statements answerable by "yes" or "no."
+- **Proposal**:
+  - Anyone can propose a logo.
+  - Must be clearly phrased to prevent confusion.
+- **Validity Assessment**:
+  - Votes accumulate.
+  - Once threshold reached, a grace period begins. If unchallenged, outcome can be "settled."
+  - However, logos remain open and may re-trigger settlement if the majority flips later.
 
-To ensure the proper functioning of scaffold-stark, your local `starknet-devnet` version must be `0.2.3`. To accomplish this, first check your local starknet-devnet version:
+### Bounty
 
-```sh
-starknet-devnet --version
-```
+- **Determination**:
+  - Funded by individuals who care about the logo's outcome.
+  - May be topped up at any time (e.g., via deposit_bounty).
+- **Allocation**:
+  - Distributed to the majority side once a logo is finalized after its grace period.
+  - Could be reallocated if a new majority emerges and triggers a new settlement.
 
-If your local starknet-devnet version is not `0.2.3`, you need to install it.
+## General System Questions
 
-- Install Starknet-devnet `0.2.3` via `asdf` ([instructions](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)).
+1. **Outcome of Logos**:
+   - Not permanently closed. If a new majority arises, a new grace period starts, and the bounty distribution can repeat.
+2. **System Implementation**:
+   - Hybrid on-chain/off-chain.
+   - On-chain logic handles proposals, votes, grace timelines, and bounty distribution.
+   - Off-chain chat rooms for discussions and debates.
+3. **Dispute Resolution**:
+   - Arbitration modules for contests or malicious actions.
+   - A review system that slashes stake or reduces reputation if foul play is proven.
+4. **Preventing Bias**:
+   - A diverse set of voters, each with some stake or reputation at risk.
+   - Future expansions to incorporate advanced identity or reputation modules.
+5. **User Incentives**:
+   - Earn bounty for correct (majority) votes.
+   - Build reputation with each validated settlement.
 
-### Scarb version
+## Potential Future Additions
+(to be considered for implementation in the future)
+### Reviewer Identity
 
-To ensure the proper functioning of scaffold-stark, your local `Scarb` version must be `2.9.2`. To accomplish this, first check your local Scarb version:
+- **Enhanced Profiles via Third-Party Identity for Synergy with Anonymity Constraints**:
+  - Adding properties to reviewers' identities.
+  - Incorporating third-party identity providers to build reputation.
 
-```sh
-scarb --version
-```
+### Federated Arbitration Modules
 
-If your local Scarb version is not `2.9.2`, you need to install it.
+- **Focus on Special Cases or Suspected Coordination to Enforce Fairness and Reduce Malicious Behavior**:
+  - Arbitrators compete to establish trusted reputations.
+  - Aim to fairly determine outcomes in edge cases and enforce penalties for malicious actions.
 
-- Install Scarb `2.9.2` via `asdf` ([instructions](https://docs.swmansion.com/scarb/download.html#install-via-asdf)).
 
-### Starknet Foundry version
+# delete 
 
-To ensure the proper functioning of the tests on scaffold-stark, your Starknet Foundry version must be 0.31.0. To accomplish this, first check your Starknet Foundry version:
+## here is the readme of my project 
+# Stark-notes Project Explanation
 
-```sh
-snforge --version
-```
+## Overview
 
-If your Starknet Foundry version is not `0.34.0`, you need to install it.
+This document outlines a system being developed for the StarkNet Hackathon. The system involves reviewers assessing "logos," which are statements answerable by "yes" or "no." Key components include reviewers, the agora pool, logos, and bounties.
 
-- Install Starknet Foundry `0.34.0` via `asdf` ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html#installation-via-asdf)).
+## Players and Concepts
 
-## Compatible versions
+### Reviewers
 
-- Starknet-devnet - v0.2.3
-- Scarb - v2.9.2
-- Snforge - v0.34.0
-- Cairo - v2.9.2
-- Rpc - v0.7.1
+- **Role**: Vote on the factual accuracy of logos.
+- **Participation**:
+  - Open to anyone.
+  - Reviewers vote on the validity of proposed logos.
+- **Anonymity**: Ideally anonymous, though enforcing anonymity is challenging.
+- **Staking & Reputation**:
+  - Reviewers must stake some stark or reputation  to participate.
+  - Reputation increases if votes align with the eventual "settled" consensus.
+  - This is simpler than a full-blown decentralized oracle network but still encourages honest behavior.
 
-## Quickstart with Starknet-Devnet
+### Agora Pool
 
-To get started with Scaffold-Stark, follow the steps below:
+- **Function**: Platform where reviewers vote on logos.
+- **Features**:
+  - May include off-chain discussion (like a debate system).
+- **Voting Mechanisms**:
+  - A minimum participation threshold (e.g., at least three votes).
+  - Weighted votes based on reviewer reputation.
+  - "Truth" outcome can shift over time if new majority forms.
 
-1. Clone this repo and install dependencies
+### Logos
 
-```bash
-git clone https://github.com/Scaffold-Stark/scaffold-stark-2.git
-cd scaffold-stark-2
-yarn install
-```
+- **Definition**: Statements answerable by "yes" or "no."
+- **Proposal**:
+  - Anyone can propose a logo.
+  - Must be clearly phrased to prevent confusion.
+- **Validity Assessment**:
+  - Votes accumulate.
+  - Once threshold reached, a grace period begins. If unchallenged, outcome can be "settled."
+  - However, logos remain open and may re-trigger settlement if the majority flips later.
 
-2. Run a local network in the first terminal.
+### Bounty
 
-```bash
-yarn chain
-```
+- **Determination**:
+  - Funded by individuals who care about the logo's outcome.
+  - May be topped up at any time (e.g., via deposit_bounty).
+- **Allocation**:
+  - Distributed to the majority side once a logo is finalized after its grace period.
+  - Could be reallocated if a new majority emerges and triggers a new settlement.
 
-> To run a fork : `yarn chain --fork-network <URL> [--fork-block <BLOCK_NUMBER>]`
+## General System Questions
 
-This command starts a local Starknet network using Devnet. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `scaffold.config.ts` for your nextjs app.
+1. **Outcome of Logos**:
+   - Not permanently closed. If a new majority arises, a new grace period starts, and the bounty distribution can repeat.
+2. **System Implementation**:
+   - Hybrid on-chain/off-chain.
+   - On-chain logic handles proposals, votes, grace timelines, and bounty distribution.
+   - Off-chain chat rooms for discussions and debates.
+3. **Dispute Resolution**:
+   - Arbitration modules for contests or malicious actions.
+   - A review system that slashes stake or reduces reputation if foul play is proven.
+4. **Preventing Bias**:
+   - A diverse set of voters, each with some stake or reputation at risk.
+   - Future expansions to incorporate advanced identity or reputation modules.
+5. **User Incentives**:
+   - Earn bounty for correct (majority) votes.
+   - Build reputation with each validated settlement.
 
-3. On a second terminal, deploy the sample contract:
+## Potential Future Additions
+(to be considered for implementation in the future)
+### Reviewer Identity
 
-```bash
-yarn deploy
-```
+- **Enhanced Profiles via Third-Party Identity for Synergy with Anonymity Constraints**:
+  - Adding properties to reviewers' identities.
+  - Incorporating third-party identity providers to build reputation.
 
-This command deploys a sample smart contract to the local network. The contract is located in `packages/snfoundry/contracts/src` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/snfoundry/scripts-ts/deploy.ts` to deploy the contract to the network. You can also customize the deploy script.
+### Federated Arbitration Modules
 
-By default `Scaffold-Stark` takes the first prefunded account from `starknet-devnet` as a deployer address,
+- **Focus on Special Cases or Suspected Coordination to Enforce Fairness and Reduce Malicious Behavior**:
+  - Arbitrators compete to establish trusted reputations.
+  - Aim to fairly determine outcomes in edge cases and enforce penalties for malicious actions.
 
-4. On a third terminal, start your NextJS app:
+## And here is the code 
+#[starknet::contract]
+mod StarkNotes {
+    use core::starknet::ContractAddress;
+    use core::integer::{u256, u64};
+    use starknet::storage;
+    use starknet::Store;
+    use starknet::Event;
 
-```bash
-yarn start
-```
+    // Data Structures
+    #[derive(Drop, Serde, starknet::Store)]
+    struct Reviewer {
+        address: ContractAddress,
+        reputation: u64,
+        stake: u256,
+    }
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+    #[derive(Drop, Serde, starknet::Store)]
+    struct Logo {
+        id: u64,
+        statement: felt252,
+        proposer: ContractAddress,
+        bounty: u256,
+        yes_votes: u64,
+        no_votes: u64,
+        total_votes: u64,
+        grace_start: u64,
+        settled_outcome: felt252,
+    }
 
-5. Check your environment variables. We have a yarn postinstall script that helps to fill in your environment variables. If the environment variable does not exist, you can fill them it manually to get the app running!
+    #[derive(Drop, Serde, starknet::Store)]
+    struct Vote {
+        reviewer: ContractAddress,
+        logo_id: u64,
+        vote: bool,
+    }
 
-## Quickstart with Sepolia Testnet
+    // Storage
+    #[storage]
+    struct Storage {
+        reviewers: Map<ContractAddress, Reviewer>,
+        logos: Map<u64, Logo>,
+        votes: Map<(u64, ContractAddress), Vote>,
+        logo_count: u64,
+        min_votes_required: u64,
+        grace_period_length: u64,
+    }
 
-<details>
+    // Events
+    #[event]
+    #[derive(Drop, Event)]
+    enum ContractEvent {
+        LogoProposed(LogoProposed),
+        VoteCast: VoteCast,
+        LogoConcluded: LogoConcluded,
+        DistributionTriggered: DistributionTriggered,
+    }
 
-1. Make sure you alredy cloned this repo and installed dependencies.
+    #[derive(Drop, Event)]
+    struct LogoProposed {
+        logo_id: u64,
+        proposer: ContractAddress,
+        statement: felt252,
+        bounty: u256,
+    }
 
-2. Prepare your environment variables.
+    #[derive(Drop, Event)]
+    struct DistributionTriggered {
+        logo_id: u64,
+        final_outcome: felt252,
+    }
 
-Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own wallet account contract address and private key.
+    // Constructor
+    #[constructor]
+    fn constructor(ref self: ContractState, min_votes: u64, grace_length: u64) {
+        self.min_votes_required.write(min_votes);
+        self.logo_count.write(0);
+        self.grace_period_length.write(grace_length);
+    }
 
-3. Change your default network to Sepolia testnet.
+    // External functions
+    #[external(v0)]
+    impl StarkNotesImpl of super::IStarkNotes<ContractState> {
+        fn propose_logo(ref self: ContractState, statement: felt252) {
+            // Get the caller's address
+            let proposer = starknet::get_caller_address();
+    
+            // Increment the logo count
+            let logo_id = self.logo_count.read() + 1;
+            self.logo_count.write(logo_id);
+    
+            // Create a new Logo struct
+            let new_logo = Logo {
+                id: logo_id,
+                statement: statement,
+                proposer: proposer,
+                bounty: 0, // Initial bounty is 0 yes_votes no_votes total_votes
+                grace_start: 0, // Grace period hasn't started yet
+                settled_outcome: 0, // Not settled yet
+            };
+    
+            // Store the new logo
+            self.logos.write(logo_id, new_logo);
+    
+            // Emit LogoProposed event
+            self.emit(LogoProposed {
+                logo_id: logo_id,
+                proposer: proposer,
+                statement: statement,
+                bounty: 0,
+            });
+        }
+    
 
-Find the `packages/nextjs/scaffold.config.ts` file and change the `targetNetworks` to `[chains.sepolia]`.
+        fn deposit_bounty(ref self: ContractState, logo_id: u64, deposit_amount: u256) {
+            // Implementation for depositing bounty
+        }
 
-![chall-0-scaffold-config](./packages/nextjs/public/scaffold-config.png)
+        fn cast_vote(ref self: ContractState, logo_id: u64, vote: bool) {
+            // Implementation for casting a vote
+        }
 
-4. Get some testnet tokens.
 
-You will need to get some `ETH` or `STRK` Sepolia tokens to deploy your contract to Sepolia testnet.
+        fn get_logo(self: @ContractState, logo_id: u64) -> Logo {
+            // Implementation to retrieve logo details
+        }
 
-> Some popular faucets are [Starknet Faucet](https://starknet-faucet.vercel.app/) and [Blastapi Starknet Sepolia Eth](https://blastapi.io/faucets/starknet-sepolia-eth)
+        fn get_reviewer(self: @ContractState, address: ContractAddress) -> Reviewer {
+            // Implementation to retrieve reviewer details
+        }
+    }
 
-4. Open a terminal, deploy the sample contract to Sepolia testnet:
+    // Internal functions
+    #[generate_trait]
+    impl InternalFunctions of InternalFunctionsTrait {
+        fn _update_reputation(ref self: ContractState, reviewer: ContractAddress, change: i64) {
+            // Implementation to update reviewer reputation
+        }
 
-```bash
-yarn deploy --network sepolia
-```
+        fn _distribute_bounty(ref self: ContractState, logo_id: u64, is_yes_outcome: bool) {
+            // Implementation to distribute bounty to whichever side is majority
+        }
 
-5. On a second terminal, start your NextJS app:
-
-```bash
-yarn start
-```
-
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
-
-### RPC specific version
-
-To ensure the proper functioning of the scaffold-stark with Testnet or Mainnet, your RPC version must be `0.7.1`. This repository contains a `.env.example` file, where we provided the default RPC URL for the Starknet Testnet: `RPC_URL_SEPOLIA=https://starknet-sepolia.public.blastapi.io/rpc/v0_7`. Let's verify this RPC version is `0.7.1` by calling a `POST` request in an API platform like `Postman` or `Insommia` . Your API endpoint should be `https://starknet-sepolia.public.blastapi.io/rpc/v0_7` and the body should be:
-
-```json
-{
- "jsonrpc":"2.0",
- "method":"starknet_specVersion",
- "id":1
+        fn _finalize_logo_if_unchallenged(ref self: ContractState, logo_id: u64) {
+            // Implementation for finalizing a logo if it hasn't been challenged
+        }
+    }
 }
-```
 
-You have to paste the endpoint and body in the API platform and click on the `Send` button. If the response is `0.7.1`, then you are good to go. Otherwise, you have to get the correct RPC URL endpoint.
+#[starknet::interface]
+trait IStarkNotes<TContractState> {
+    fn propose_logo(ref self: TContractState, statement: felt252);
+    fn deposit_bounty(ref self: TContractState, logo_id: u64, deposit_amount: u256);
+    fn cast_vote(ref self: TContractState, logo_id: u64, vote: bool);
+    fn get_logo(self: @TContractState, logo_id: u64) -> Logo;
+    fn get_reviewer(self: @TContractState, address: ContractAddress) -> Reviewer;
+}
 
-![rpc-version](./packages/nextjs/public/rpc-version.png)
-</details>
-
-## **What's next**
-
-- Edit your smart contract `YourContract.cairo` in `packages/snfoundry/contracts/src`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/snfoundry/script-ts/deploy.ts`
-- Edit your smart contract tests in `packages/snfoundry/contracts/src/test`. To run tests use `yarn test`
-- You can write unit tests for your Next.js app! Run them with one the following scripts below.
-  - `yarn test:nextjs` to run regular tests with watch mode
-  - `yarn test:nextjs run` to run regular tests without watch mode
-  - `yarn test:nextjs run --coverage` to run regular tests without watch mode with coverage
-
-## Documentation
-
-Visit our [docs](https://docs.scaffoldstark.com/) to learn how to start building with Scaffold-Stark.
-
-To know more about its features, check out our [website](https://scaffoldstark.com)
-
-#### External Image Source Configuration
-
-In the `next.config.mjs`, we've set up external image sources using `remotePatterns` to allow fetching assets from specific domains. This is particularly useful for loading images or assets from external servers or services.
-
-```javascript
-remotePatterns: [
-  // External image source for StarkNet ID identicons
-  {
-    protocol: "https",
-    hostname: "identicon.starknet.id",
-    pathname: "/**", // Allows all paths under this domain
-  },
-  // External image source for images hosted on Starkurabu
-  {
-    protocol: "https",
-    hostname: "img.starkurabu.com",
-    pathname: "/**",
-  },
-],
-```
-
-## Contributing to Scaffold-Stark
-
-We welcome contributions to Scaffold-Stark!
-
-Please see [CONTRIBUTING.MD](https://github.com/Scaffold-Stark/scaffold-stark-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-Stark.
+i want you to : 
+- explain what is the best way to implement the bounty pot system where tokens can wait to be distributed 
