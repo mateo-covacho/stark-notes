@@ -109,6 +109,8 @@ mod StarkNotes {
     // External functions
     #[external(v0)]
     impl StarkNotesImpl of super::IStarkNotes<ContractState> {
+
+
         fn propose_logo(ref self: ContractState, statement: felt252) {
             // Get the caller's address
             let proposer = starknet::get_caller_address();
