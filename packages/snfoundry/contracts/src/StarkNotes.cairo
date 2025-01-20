@@ -1,3 +1,34 @@
+use core::starknet::ContractAddress;
+
+#[derive(Drop, Serde, starknet::Store)]
+struct Reviewer {
+    address: ContractAddress,
+    reputation: u64,
+    stake: u256,
+}
+
+#[derive(Drop, Serde, starknet::Store)]
+struct Logo {
+    id: u64,
+    statement: felt252,
+    proposer: ContractAddress,
+    bounty: u256,
+    yes_votes: u64,
+    no_votes: u64,
+    total_votes: u64,
+    grace_start: u64,
+    settled_outcome: felt252,
+}
+#[starknet::interface]
+trait IStarkNotes<TContractState> {
+    fn propose_logo(ref self: TContractState, statement: felt252);
+    fn get_logo(self: @TContractState, logo_id: u64) -> Logo;
+    fn deposit_bounty(ref self: TContractState, logo_id: u64, deposit_amount: u256);
+    fn cast_vote(ref self: TContractState, logo_id: u64, vote: bool);
+    fn get_reviewer(self: @TContractState, address: ContractAddress) -> Reviewer;
+    fn claim_bounty(ref self: TContractState, logo_id: u64) -> bool;
+}
+
 #[starknet::contract]
 mod StarkNotes {
     use core::starknet::ContractAddress;
@@ -5,37 +36,8 @@ mod StarkNotes {
         use starknet::storage::{
         StoragePointerReadAccess, StoragePointerWriteAccess, StoragePathEntry, Map,
     };
-    
-    #[starknet::interface]
-    trait IStarkNotes<TContractState> {
-        fn propose_logo(ref self: TContractState, statement: felt252);
-        fn get_logo(self: @TContractState, logo_id: u64) -> Logo;
-        fn deposit_bounty(ref self: TContractState, logo_id: u64, deposit_amount: u256);
-        fn cast_vote(ref self: TContractState, logo_id: u64, vote: bool);
-        fn get_reviewer(self: @TContractState, address: ContractAddress) -> Reviewer;
-        fn claim_bounty(ref self: TContractState, logo_id: u64) -> bool;
-    }
+    use super::{IStarkNotes, Reviewer, Logo};
 
-    // Data Structures
-    #[derive(Drop, Serde, starknet::Store)]
-    struct Reviewer {
-        address: ContractAddress,
-        reputation: u64,
-        stake: u256,
-    }
-
-    #[derive(Drop, Serde, starknet::Store)]
-    struct Logo {
-        id: u64,
-        statement: felt252,
-        proposer: ContractAddress,
-        bounty: u256,
-        yes_votes: u64,
-        no_votes: u64,
-        total_votes: u64,
-        grace_start: u64,
-        settled_outcome: felt252,
-    }
 
     #[derive(Drop, Serde, starknet::Store)]
     struct Vote {
@@ -57,7 +59,6 @@ mod StarkNotes {
         bounty_token: ContractAddress,
         creation_timestamp: u64 
     }
-
     // starknet::Events
     #[event]
     #[derive(Drop, starknet::Event)]
@@ -106,6 +107,7 @@ mod StarkNotes {
         self.grace_period_length.write(grace_length);
     }
 
+
     // External functions
     #[external(v0)]
     impl StarkNotesImpl of super::IStarkNotes<ContractState> {
@@ -124,6 +126,9 @@ mod StarkNotes {
                 id: logo_id,
                 statement: statement,
                 proposer: proposer,
+                yes_votes: 0,
+                no_votes: 0,
+                total_votes: 0,
                 bounty: 0, // Initial bounty is 0 yes_votes no_votes total_votes
                 grace_start: 0, // Grace period hasn't started yet
                 settled_outcome: 0, // Not settled  yet
@@ -282,11 +287,11 @@ mod StarkNotes {
             let min_votes = self.min_votes_required.read();
             let winning_percentage = self._winning_votes_percentage(logo_id);
 
-            if logo.total_votes >= min_votes && (winning_percentage >= 0.66 || winning_percentage <= 0.34) {
+            if logo.total_votes >= min_votes && (winning_percentage >= 66 || winning_percentage <= 34) {
                 let grace_start = starknet::get_block_timestamp();
                 let updated_logo = Logo {
                     grace_start,
-                    settled_outcome: if winning_percentage > 0.5 { 'Yes' } else { 'No' },
+                    settled_outcome: if winning_percentage > 50 { 'Yes' } else { 'No' },
                     ..logo
                 };
                 self.logos.write(logo_id, updated_logo);
