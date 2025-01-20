@@ -1,5 +1,47 @@
 use core::starknet::ContractAddress;
 
+trait IERC20DispatcherTrait<T> {
+    fn name(self: T) -> felt252;
+    fn transfer(self: T, recipient: ContractAddress, amount: u256);
+}
+
+#[derive(Copy, Drop, starknet::Store, Serde)]
+struct IERC20Dispatcher {
+    pub contract_address: starknet::ContractAddress,
+}
+
+impl IERC20DispatcherImpl of IERC20DispatcherTrait<IERC20Dispatcher> {
+    fn name(self: IERC20Dispatcher) -> felt252 {
+        let mut __calldata__ = core::traits::Default::default();
+
+        let mut __dispatcher_return_data__ = starknet::syscalls::call_contract_syscall(
+            self.contract_address, selector!("name"), core::array::ArrayTrait::span(@__calldata__),
+        );
+        let mut __dispatcher_return_data__ = starknet::SyscallResultTrait::unwrap_syscall(
+            __dispatcher_return_data__,
+        );
+        core::option::OptionTrait::expect(
+            core::serde::Serde::<felt252>::deserialize(ref __dispatcher_return_data__),
+            'Returned data too short',
+        )
+    }
+    fn transfer(self: IERC20Dispatcher, recipient: ContractAddress, amount: u256) {
+        let mut __calldata__ = core::traits::Default::default();
+        core::serde::Serde::<ContractAddress>::serialize(@recipient, ref __calldata__);
+        core::serde::Serde::<u256>::serialize(@amount, ref __calldata__);
+
+        let mut __dispatcher_return_data__ = starknet::syscalls::call_contract_syscall(
+            self.contract_address,
+            selector!("transfer"),
+            core::array::ArrayTrait::span(@__calldata__),
+        );
+        let mut __dispatcher_return_data__ = starknet::SyscallResultTrait::unwrap_syscall(
+            __dispatcher_return_data__,
+        );
+        ()
+    }
+}
+
 #[derive(Drop, Serde, starknet::Store)]
 struct Reviewer {
     address: ContractAddress,
@@ -7,7 +49,7 @@ struct Reviewer {
     stake: u256,
 }
 
-#[derive(Drop, Serde, starknet::Store)]
+#[derive(Drop, Copy, Serde, starknet::Store)]
 struct Logo {
     id: u64,
     statement: felt252,
@@ -31,13 +73,14 @@ trait IStarkNotes<TContractState> {
 
 #[starknet::contract]
 mod StarkNotes {
-    use core::starknet::ContractAddress;
+    use core::starknet::{ContractAddress};
+    use starknet::ContractAddressZeroable;
     use core::integer::{u256, u64};
         use starknet::storage::{
         StoragePointerReadAccess, StoragePointerWriteAccess, StoragePathEntry, Map,
     };
     use super::{IStarkNotes, Reviewer, Logo};
-
+    use super::{IERC20Dispatcher, IERC20DispatcherTrait};
 
     #[derive(Drop, Serde, starknet::Store)]
     struct Vote {
@@ -66,7 +109,16 @@ mod StarkNotes {
         LogoProposed: LogoProposed ,
         VoteCast: VoteCast,
         LogoConcluded: LogoConcluded,
+        BountyDeposited: BountyDeposited,
         DistributionTriggered: DistributionTriggered,
+    }
+
+     
+    #[derive(Drop, starknet::Event)]
+    struct BountyDeposited {
+        logo_id: u64,
+        depositor: ContractAddress,
+        amount: u256,
     }
 
     #[derive(Drop, starknet::Event)]
@@ -170,9 +222,9 @@ mod StarkNotes {
             assert(!self._is_bounty_locked(logo_id), 'Bounty is locked');
             
             let vote = self.votes.read((logo_id, caller));
-            assert(vote.reviewer != ContractAddress::zero(), 'No vote cast');
+            assert(vote.reviewer != ContractAddressZeroable::zero(), 'No vote cast');
             
-            let winning_outcome = self._winning_votes_percentage(logo_id) > 0.5;
+            let winning_outcome = self._winning_votes_percentage(logo_id) > 50;
             assert(vote.vote == winning_outcome, 'Did not vote for winning outcome');
             
             self._distribute_bounty(logo_id, winning_outcome);
@@ -221,7 +273,7 @@ mod StarkNotes {
 
         fn get_reviewer(self: @ContractState, address: ContractAddress) -> Reviewer {
             let reviewer = self.reviewers.read(address);
-            assert(reviewer.address != ContractAddress::zero(), 'Reviewer does not exist');
+            assert(reviewer.address != ContractAddressZeroable::zero(), 'Reviewer does not exist');
             reviewer
         }
     }
